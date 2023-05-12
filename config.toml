@@ -10,11 +10,11 @@ denomination   = "usei"
     [testnets.theta]
     node_url = "http://localhost:26657"
     chain_id = "sei-chain"
-    faucet_address = "sei1gyvh0weymtt2spl8rw63088s0dvkcdjn87gjfl"
+    faucet_address = "sei1pvv9lfj4g9kleux43epgej9trnf2tenj0e6dff"
     block_explorer_tx = "https://explorer.sei.prithvidevs.in/sei"
     daily_cap = "400000000"
     amount_to_send = "10000000"
-    tx_fees = "500"
+    tx_fees = "2000"
 
 [discord]
 bot_token = ""
