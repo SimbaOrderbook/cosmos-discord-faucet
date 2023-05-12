@@ -3,15 +3,15 @@
 verbose        = "yes"
 
 [cosmos]
-prefix         = "cosmos"
-denomination   = "uatom"
+prefix         = "sei"
+denomination   = "usei"
 
 [testnets]
     [testnets.theta]
-    node_url = "http://sentry-01.theta-testnet.polypore.xyz:26657"
-    chain_id = "theta-testnet-001"
-    faucet_address = "cosmos15aptdqmm7ddgtcrjvc5hs988rlrkze40l4q0he"
-    block_explorer_tx = "https://explorer.theta-testnet.polypore.xyz/transactions/"
+    node_url = "http://localhost:26657"
+    chain_id = "sei-chain"
+    faucet_address = "sei1gyvh0weymtt2spl8rw63088s0dvkcdjn87gjfl"
+    block_explorer_tx = "https://explorer.sei.prithvidevs.in/sei"
     daily_cap = "400000000"
     amount_to_send = "10000000"
     tx_fees = "500"
@@ -19,7 +19,7 @@ denomination   = "uatom"
 [discord]
 bot_token = ""
 # comma separated list of channels
-channels_to_listen = "test-channel"
+channels_to_listen = "faucet_bot"
 # how often user can request tokens from faucet (seconds)
 # 10800 = 3  hours
 # 86400 = 24 hours

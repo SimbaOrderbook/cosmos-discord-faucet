@@ -12,7 +12,7 @@ from tabulate import tabulate
 import aiofiles as aiof
 import toml
 import discord
-import gaia_calls as gaia
+import sei_calls as sei
 
 # Turn Down Discord Logging
 disc_log = logging.getLogger('discord')
@@ -74,7 +74,7 @@ async def get_faucet_balance(testnet: dict):
     """
     Returns the uatom balance
     """
-    balances = gaia.get_balance(
+    balances = sei.get_balance(
         address=testnet['faucet_address'],
         node=testnet['node_url'],
         chain_id=testnet['chain_id'])
@@ -96,10 +96,10 @@ async def balance_request(message, testnet: dict):
 
     try:
         # check address is valid
-        result = gaia.check_address(address)
+        result = sei.check_address(address)
         if result['human'] == ADDRESS_PREFIX:
             try:
-                balance = gaia.get_balance(
+                balance = sei.get_balance(
                     address=address,
                     node=testnet["node_url"],
                     chain_id=testnet["chain_id"])
@@ -107,11 +107,11 @@ async def balance_request(message, testnet: dict):
                 reply = reply + tabulate(balance)
                 reply = reply + '\n```\n'
             except Exception:
-                reply = '❗ gaia could not handle your request'
+                reply = '❗ sei could not handle your request'
         else:
             reply = f'❗ Expected `{ADDRESS_PREFIX}` prefix'
     except Exception:
-        reply = '❗ gaia could not verify the address'
+        reply = '❗ sei could not verify the address'
     await message.reply(reply)
 
 
@@ -121,8 +121,8 @@ async def faucet_status(message, testnet: dict):
     """
     reply = ''
     try:
-        node_status = gaia.get_node_status(node=testnet['node_url'])
-        balance = gaia.get_balance(
+        node_status = sei.get_node_status(node=testnet['node_url'])
+        balance = sei.get_balance(
             address=testnet['faucet_address'],
             node=testnet['node_url'],
             chain_id=testnet['chain_id'])
@@ -134,7 +134,7 @@ async def faucet_status(message, testnet: dict):
                 f'```'
             reply = status
     except Exception:
-        reply = '❗ gaia could not handle your request'
+        reply = '❗ sei could not handle your request'
     await message.reply(reply)
 
 
@@ -150,7 +150,7 @@ async def transaction_info(message, testnet: dict):
     hash_id = message_sections[1]
     if len(hash_id) == 64:
         try:
-            res = gaia.get_tx_info(
+            res = sei.get_tx_info(
                 hash_id=hash_id,
                 node=testnet['node_url'],
                 chain_id=testnet['chain_id'])
@@ -161,7 +161,7 @@ async def transaction_info(message, testnet: dict):
                 f'Height:  {res["height"]}\n```'
 
         except Exception:
-            reply = '❗ gaia could not handle your request'
+            reply = '❗ sei could not handle your request'
     else:
         reply = f'❗ Hash ID must be 64 characters long, received `{len(hash_id)}`'
     await message.reply(reply)
@@ -256,12 +256,12 @@ async def token_request(message, testnet: dict):
     # Check address
     try:
         # check address is valid
-        result = gaia.check_address(address)
+        result = sei.check_address(address)
         if result['human'] != ADDRESS_PREFIX:
             await message.reply(f'❗ Expected `{ADDRESS_PREFIX}` prefix')
             return
     except Exception:
-        await message.reply('❗ gaia could not verify the address')
+        await message.reply('❗ sei could not verify the address')
         return
 
     requester = message.author
@@ -278,8 +278,8 @@ async def token_request(message, testnet: dict):
                        'chain_id': testnet['chain_id'],
                        'node': testnet['node_url']}
             try:
-                # Make gaia call and send the response back
-                transfer = gaia.tx_send(request)
+                # Make sei call and send the response back
+                transfer = sei.tx_send(request)
                 logging.info('%s requested tokens for %s in %s',
                              requester, address, testnet['name'])
                 now = datetime.datetime.now()
