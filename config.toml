@@ -4,7 +4,7 @@ verbose        = "yes"
 
 [cosmos]
 prefix         = "sei"
-denomination   = "usei"
+denominations   = ["usei", "uusdc"]
 
 [testnets]
     [testnets.theta]
