@@ -4,14 +4,14 @@ verbose        = "yes"
 
 [cosmos]
 prefix         = "sei"
-denominations   = ["usei", "uusdc"]
+denominations   = ["usei"]
 
 [testnets]
     [testnets.theta]
-    node_url = "http://localhost:26657"
-    chain_id = "sei-chain"
+    node_url = "https://rpc.atlantic-2.seinetwork.io"
+    chain_id = "atlantic-2"
     faucet_address = "sei1pvv9lfj4g9kleux43epgej9trnf2tenj0e6dff"
-    block_explorer_tx = "https://explorer.sei.prithvidevs.in/sei"
+    block_explorer_tx = "https://sei.explorers.guru/transaction/"
     daily_cap = "400000000"
     amount_to_send = "10000000"
     tx_fees = "2000"
@@ -23,4 +23,4 @@ channels_to_listen = "faucet_bot"
 # how often user can request tokens from faucet (seconds)
 # 10800 = 3  hours
 # 86400 = 24 hours
-request_timeout    = "86400"
+request_timeout = "86400"

@@ -272,37 +272,42 @@ async def token_request(message, testnet: dict):
         approved, reply = check_time_limits(
             requester=requester.id, address=address, testnet=testnet)
         if approved:
-            for denom in DENOMS: 
-                request = {'sender': testnet['faucet_address'],
-                        'recipient': address,
-                        'amount': testnet['amount_to_send'] + denom,
-                        'fees': testnet['tx_fees'] + denom,
-                        'chain_id': testnet['chain_id'],
-                        'node': testnet['node_url']}
+            amountArr = list(map(lambda x: str(testnet['amount_to_send']) + x, DENOMS))
+            amountStr = ", ".join(amountArr)
 
-                logging.info(request)
-                try:
-                    # Make sei call and send the response back
-                    transfer = sei.tx_send(request)
-                    logging.info('%s requested tokens for %s in %s',
-                                requester, address, testnet['name'])
-                    now = datetime.datetime.now()
-                    if testnet["block_explorer_tx"]:
-                        await message.reply(f'✅  <{testnet["block_explorer_tx"]}{transfer}>')
-                    else:
-                        await message.reply(f'✅ Hash ID: {transfer}')
-                    # Get faucet balance and save to transaction log
-                    balance = await get_faucet_balance(testnet)
-                    await save_transaction_statistics(f'{now.isoformat(timespec="seconds")},'
-                                                      f'{testnet["name"]},{address},'
-                                                      f'{testnet["amount_to_send"] + denom},'
-                                                      f'{transfer},'
-                                                      f'{balance}')
-                except Exception:
-                    await message.reply('❗ request could not be processed')
-                    del ACTIVE_REQUESTS[testnet['name']][requester.id]
-                    del ACTIVE_REQUESTS[testnet['name']][address]
-                    testnet['day_tally'] -= int(testnet['amount_to_send'])
+            logging.info("amountStr", amountStr)
+
+            request = {'sender': testnet['faucet_address'],
+                    'recipient': address,
+                    'amount':  amountStr,
+                    'fees': testnet['tx_fees'] + DENOMS[0],
+                    'chain_id': testnet['chain_id'],
+                    'node': testnet['node_url']}
+
+            logging.info(request)
+
+            try:
+                # Make sei call and send the response back
+                transfer = sei.tx_send(request)
+                logging.info('%s requested tokens for %s in %s',
+                            requester, address, testnet['name'])
+                now = datetime.datetime.now()
+                if testnet["block_explorer_tx"]:
+                    await message.reply(f'✅  <{testnet["block_explorer_tx"]}{transfer}>')
+                else:
+                    await message.reply(f'✅ Hash ID: {transfer}')
+                # Get faucet balance and save to transaction log
+                balance = await get_faucet_balance(testnet)
+                await save_transaction_statistics(f'{now.isoformat(timespec="seconds")},'
+                                                    f'{testnet["name"]},{address},'
+                                                    f'{amountStr},'
+                                                    f'{transfer},'
+                                                    f'{balance}')
+            except Exception:
+                await message.reply('❗ request could not be processed')
+                del ACTIVE_REQUESTS[testnet['name']][requester.id]
+                del ACTIVE_REQUESTS[testnet['name']][address]
+                testnet['day_tally'] -= int(testnet['amount_to_send'])
         else:
             testnet['day_tally'] -= int(testnet['amount_to_send'])
             logging.info('%s requested tokens for %s in %s and was rejected',
